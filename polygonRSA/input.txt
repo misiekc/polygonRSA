@@ -10,7 +10,7 @@ boundaryConditions = periodic      # periodic or free
 
 # simulation properties
 from = 0                           # first packing number. Packing number is used as a random number generator seed
-collectors = 100                   # number of packings to generate
+collectors = 1                   # number of packings to generate
 
 # packed particle description
 particleType = Triangle            # shape to pack
