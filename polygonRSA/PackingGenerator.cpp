@@ -402,7 +402,7 @@ void PackingGenerator::printRemainingVoxels(const std::string &prefix){
 void PackingGenerator::toWolfram(const Packing &packing, double size, VoxelList *voxels, const std::string &filename){
 	std::ofstream file(filename);
 
-    file << "Graphics3D[{Red";
+    file << "Graphics[{Red";
 
 	for (const RSAShape *s : packing) {
 		file << ", " << std::endl << s->toWolfram();
