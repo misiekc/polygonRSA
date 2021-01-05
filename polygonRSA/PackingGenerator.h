@@ -58,7 +58,7 @@ public:
 	void restore(std::istream &f);
 
 	static void toPovray(const Packing &packing, double size, VoxelList *voxels, const std::string &filename);
-	static void toWolfram(const Packing &packing, double size, VoxelList *voxels, const std::string &filename);
+	static void toWolfram(const Packing &packing, VoxelList *voxels, const std::string &filename);
 	static std::vector<std::string> findPackingsInDir(const std::string &dirName);
 };
 

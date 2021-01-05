@@ -58,7 +58,7 @@ void i2position(double* da, int dalength, int index, double dx, int n){
 	}
 }
 
-void coordinates(int* result, const double* da, int dalength, double size, double dx, int n){
+void coordinates(int *result, const double *da, int dalength, double size, double dx) {
 	for(int i=dalength-1; i>=0; i--){
 		if (da[i]<0)
 			result[i] = (int)((da[i] + size)/dx);

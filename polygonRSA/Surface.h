@@ -27,7 +27,7 @@ protected:
 	RSAVector vectorPeriodicBC(const RSAVector &v) const;
 
 public:
-	Surface(double s, double ndx, double vdx);
+	Surface(double s, double ndx);
 	virtual ~Surface();
 
 	void clear();

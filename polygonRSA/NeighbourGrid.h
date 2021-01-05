@@ -47,7 +47,7 @@ private:
 
 			i2position(da, 2, i, this->dx, this->n);
 			in[0] = 0; in[1] = 0;
-			coordinates(coords, da, 2, this->linearSize, this->dx, this->n);
+            coordinates(coords, da, 2, this->linearSize, this->dx);
 			do{
 				int iCell = neighbour2i(coords, in, 2, 1, this->n);
 				this->neighbouringCells[i]->push_back(iCell);

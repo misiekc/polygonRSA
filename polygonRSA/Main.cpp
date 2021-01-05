@@ -178,7 +178,7 @@ void wolfram(const ProgramArguments &arguments) {
     std::string file(positionalArguments[0]);
     Packing packing;
     packing.restore(file);
-    PackingGenerator::toWolfram(packing, arguments.getParameters().surfaceSize, nullptr, file + ".nb");
+    PackingGenerator::toWolfram(packing, nullptr, file + ".nb");
 }
 
 void bc_expand(const ProgramArguments &arguments) {

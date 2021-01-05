@@ -8,7 +8,7 @@
 #include "Surface.h"
 #include <iostream>
 
-Surface::Surface(double s, double ndx, double vdx) : RSABoundaryConditions() {
+Surface::Surface(double s, double ndx) : RSABoundaryConditions() {
 	this->size = s;
 	this->list = new NeighbourGrid<const RSAShape>(s, ndx);
 }

@@ -40,8 +40,7 @@ double RSAShape::getNeighbourListCellSize() {
 	return RSAShape::neighbourListCellSize;
 }
 
-const typename RSAShape::create_shape_fun_ptr
-RSAShape::getCreateShapeImpl() {
+const typename RSAShape::create_shape_fun_ptr &RSAShape::getCreateShapeImpl() {
     return createShapeImpl;
 }
 
@@ -80,10 +79,6 @@ void RSAShape::rotate(const RSAOrientation &v){
     RSAOrientation orientation;
 	orientation[0] = this->getOrientation()[0] + v[0];
     this->setOrientation(orientation);
-}
-
-double RSAShape::minDistance(const RSAShape *s) const{
-	return 0.0;
 }
 
 std::string RSAShape::toString() const{

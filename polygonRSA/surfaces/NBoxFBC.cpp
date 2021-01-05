@@ -7,7 +7,7 @@
 
 #include "NBoxFBC.h"
 
-NBoxFBC::NBoxFBC(double s, double ndx, double vdx) : Surface(s, ndx, vdx) {
+NBoxFBC::NBoxFBC(double s, double ndx, [[maybe_unused]] double vdx) : Surface(s, ndx) {
 	// TODO Auto-generated constructor stub
 }
 
@@ -15,7 +15,9 @@ double NBoxFBC::getArea() const {
 	return pow(this->size, 2);
 }
 
-RSAVector NBoxFBC::getTranslation(double s, const RSAVector &p1, const RSAVector &p2) {
+RSAVector NBoxFBC::getTranslation([[maybe_unused]] double s, [[maybe_unused]] const RSAVector &p1,
+                                  [[maybe_unused]] const RSAVector &p2)
+{
 	return {};
 }
 

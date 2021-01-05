@@ -399,7 +399,7 @@ void PackingGenerator::printRemainingVoxels(const std::string &prefix){
 }
 
 
-void PackingGenerator::toWolfram(const Packing &packing, double size, VoxelList *voxels, const std::string &filename){
+void PackingGenerator::toWolfram(const Packing &packing, VoxelList *voxels, const std::string &filename) {
 	std::ofstream file(filename);
 
     file << "Graphics[{Red";
@@ -419,7 +419,7 @@ void PackingGenerator::toWolfram(const Packing &packing, double size, VoxelList 
 
 
 void PackingGenerator::toWolfram(const std::string &filename){
-	PackingGenerator::toWolfram(this->packing, this->params.surfaceSize, this->voxels, filename);
+    PackingGenerator::toWolfram(this->packing, this->voxels, filename);
 }
 
 

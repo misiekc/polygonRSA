@@ -211,7 +211,7 @@ public:
      * @brief returns a pointer to function for creating shapes - taking RND pointer and returning Shape pointer.
      * @return a pointer to function for creating shapes - taking RND pointer and returning Shape pointer
      */
-    static const create_shape_fun_ptr getCreateShapeImpl();
+    static const create_shape_fun_ptr &getCreateShapeImpl();
 
     /**
      * @brief Returns an array of all angles describing shape's orientation.
@@ -272,13 +272,6 @@ public:
 	virtual bool voxelInside(RSABoundaryConditions *bc, const RSAVector &voxelPosition,
                              const RSAOrientation &orientation, double spatialSize,
                              double angularSize) const = 0;
-
-    /**
-     * @brief ?? Moves the shape towards given shape s.
-     * @param s ??
-     * @return ??
-     */
-	virtual double minDistance(const RSAShape *s) const;
 
     /**
      * @brief Returns string representation of the shape.
@@ -352,7 +345,7 @@ public:
 
 template<typename SPECIFIC_SHAPE>
 void RSAShape::setDefaultCreateShapeImpl() {
-    createShapeImpl = [](RND *rnd) {
+    createShapeImpl = []([[maybe_unused]] RND *rnd) {
         return static_cast<RSAShape *>(new SPECIFIC_SHAPE());
     };
 }

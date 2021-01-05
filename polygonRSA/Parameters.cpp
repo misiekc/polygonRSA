@@ -49,7 +49,6 @@ Parameters::Parameters(const std::string &fileName) {
 void Parameters::validateData() {
 	Validate(maxVoxels > 0);
 	Validate(requestedAngularVoxelSize > 0);
-	Validate(from >= 0);
 	Validate(collectors > 0);
 	Validate(split > 0);
 	Validate(!std::isnan(surfaceSize) && surfaceSize > 0);
