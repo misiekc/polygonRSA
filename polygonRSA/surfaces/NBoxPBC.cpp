@@ -7,7 +7,7 @@
 
 #include "NBoxPBC.h"
 
-NBoxPBC::NBoxPBC(double s, double ndx, double vdx) : Surface(s, ndx) {
+NBoxPBC::NBoxPBC(double s, double ndx, [[maybe_unused]] double vdx) : Surface(s, ndx) {
 }
 
 double NBoxPBC::getArea() const {

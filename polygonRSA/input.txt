@@ -4,8 +4,8 @@ requestedAngularVoxelSize = 0.3    # upper bound on voxel angular size
 split = 100000                     # number of failed RSA iterations to split voxels
 
 # packing properties
-surfaceVolume = 10000.0            # packing area
-storePackings = false              # true if packings are to be saved to packing_[...].bin files
+surfaceVolume = 100.0            # packing area
+storePackings = true              # true if packings are to be saved to packing_[...].bin files
 boundaryConditions = periodic      # periodic or free
 
 # simulation properties
@@ -13,6 +13,6 @@ from = 0                           # first packing number. Packing number is use
 collectors = 1                   # number of packings to generate
 
 # packed particle description
-particleType = Triangle            # shape to pack
-particleAttributes = 1.0 1.0 1.0   # particle dependent attributes - here lengths of triangle sides
+particleType = RegularRoundedPolygon            # shape to pack
+particleAttributes = standard 3 1 0.5   # particle dependent attributes - here lengths of triangle sides
 #ompThreads = 1                    # upper bound on number of OpenMP threads to spawn, by default all available cores are used 

@@ -34,7 +34,7 @@ PackingGenerator::PackingGenerator(int seed, const Parameters *params) {
 	RND rnd(this->seed);
 
 	this->spatialSize = this->params.surfaceSize;
-	this->angularSize = RSAShape::getVoxelAngularSize();
+	this->angularSize = RSAShape::getAngularVoxelSize();
 	if (this->params.requestedAngularVoxelSize > this->angularSize)
 		this->params.requestedAngularVoxelSize = this->angularSize;
 

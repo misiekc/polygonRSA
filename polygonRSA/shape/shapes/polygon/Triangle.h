@@ -11,7 +11,7 @@
 class Triangle : public Polygon {
 private:
     static void parseAttributes(const std::string &args, double &a, double &b, double &c);
-    static Vector<2> calculateThirdVertex(double a, double b, double c);
+    static RSAVector calculateThirdVertex(double a, double b, double c);
 
 public:
     ~Triangle() override = default;

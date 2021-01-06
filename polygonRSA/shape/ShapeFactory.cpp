@@ -8,6 +8,9 @@
 #include "ShapeFactory.h"
 #include "shapes/polygon/Polygon.h"
 #include "shapes/polygon/Triangle.h"
+#include "shapes/polygon/RegularDiskopolygon.h"
+#include "shapes/polygon/RegularRoundedPolygon.h"
+#include "shapes/polygon/RoundedPolygon.h"
 
 struct UnknownShapeException: public std::domain_error {
 	UnknownShapeException() :
@@ -40,9 +43,18 @@ void ShapeFactory::initShapeClass0(const std::string &sClass,
 		Triangle::initClass(attr);
 		return;
 	} else if (sClass == "Polygon") {
-		Polygon::initClass(attr);
-		return;
-	}
+        Polygon::initClass(attr);
+        return;
+    } else if (sClass == "RegularDiskopolygon") {
+        RegularDiskopolygon::initClass(attr);
+        return;
+    } else if (sClass == "RegularRoundedPolygon") {
+        RegularRoundedPolygon::initClass(attr);
+        return;
+    } else if (sClass == "RoundedPolygon") {
+        RoundedPolygon::initClass(attr);
+        return;
+    }
 	throw UnknownShapeException();
 }
 
