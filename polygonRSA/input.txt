@@ -5,14 +5,14 @@ split = 100000                     # number of failed RSA iterations to split vo
 
 # packing properties
 surfaceVolume = 100.0            # packing area
-storePackings = true              # true if packings are to be saved to packing_[...].bin files
-boundaryConditions = periodic      # periodic or free
+storePackings = true             # true if packings are to be saved to packing_[...].bin files
+boundaryConditions = periodic    # periodic or free
 
 # simulation properties
-from = 0                           # first packing number. Packing number is used as a random number generator seed
+from = 0                         # first packing number. Packing number is used as a random number generator seed
 collectors = 1                   # number of packings to generate
 
 # packed particle description
 particleType = RegularRoundedPolygonAlgebraic            # shape to pack
-particleAttributes = standard 3 1 0.5   # particle dependent attributes - here lengths of triangle sides
-#ompThreads = 1                    # upper bound on number of OpenMP threads to spawn, by default all available cores are used 
+particleAttributes = standard 3 1 0.5   # particle dependent attributes - here [number of sides] [side length] [rounding radius]
+#ompThreads = 1                    # upper bound on number of OpenMP threads to spawn, by default all available ht threads are used
