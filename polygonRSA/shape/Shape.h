@@ -63,13 +63,13 @@ class ShapeStaticInfo;
  * non-zero only if voxelInside is capable of dealing with angle-dependent exclusion zones, ie. when generating
  * saturated RSA packings is supported
  */
-class RSAShape : public RSAPositioned {
+class Shape : public RSAPositioned {
 public:
 
     /**
      * @brief A pointer to function for creating shapes - taking RND pointer and returning Shape pointer
      */
-    using create_shape_fun_ptr = RSAShape* (*)(RND *rnd);
+    using create_shape_fun_ptr = Shape* (*)(RND *rnd);
 
 protected:
 
@@ -118,7 +118,7 @@ protected:
      * @param bc boundary conditions to apply
      * @param second shape to be translated according to bc
      */
-    virtual void applyBC(RSABoundaryConditions *bc, RSAShape *second) const;
+    virtual void applyBC(BoundaryConditions *bc, Shape *second) const;
 
     /**
      * @brief Sets shape's new orientation.
@@ -151,8 +151,8 @@ public:
     /**
      * @brief Constructs default-oriented shape in the origin of the coordinate system.
      */
-    RSAShape();
-    virtual ~RSAShape() = default;
+    Shape();
+    virtual ~Shape() = default;
 
     /**
      * @brief Returns linear size of a cell in a NeighbourGrid.
@@ -247,7 +247,7 @@ public:
      * @param s the second shape
      * @return false if there is no overlap, true otherwise
      */
-    virtual bool overlap(RSABoundaryConditions *bc, const RSAShape *s) const = 0;
+    virtual bool overlap(BoundaryConditions *bc, const Shape *s) const = 0;
 
 
     /**
@@ -258,7 +258,7 @@ public:
      * @param shapes vector of shapes
      * @return pointer to overlapping shape or nullptr in no overlap detected
      */
-    virtual const RSAShape* overlap(RSABoundaryConditions *bc, std::vector<const RSAShape *> *shapes) const;
+    virtual const Shape* overlap(BoundaryConditions *bc, std::vector<const Shape *> *shapes) const;
 
     /**
      * @brief Makes a quick check for overlap using inscribed and circumscribed sphere radiuses.
@@ -273,9 +273,9 @@ public:
      * @return TRUE or FALSE if result has been determined, UNKNOWN if complex check is required
      */
     EarlyRejectionResult
-    overlapEarlyRejection(RSABoundaryConditions *bc, const RSAShape *s, ShapeStaticInfo shapeStaticInfo_) const;
+    overlapEarlyRejection(BoundaryConditions *bc, const Shape *s, ShapeStaticInfo shapeStaticInfo_) const;
 
-    EarlyRejectionResult overlapEarlyRejection(RSABoundaryConditions *bc, const RSAShape *s) const;
+    EarlyRejectionResult overlapEarlyRejection(BoundaryConditions *bc, const Shape *s) const;
 
     /**
      * @brief Returns a volume of the shape. dim is a packing dimension which can be smaller than shape dimension. Then
@@ -300,7 +300,7 @@ public:
      * @param angularSize angular size of the voxel
      * @return true if the voxel is fully covered by the exclusion zone of @a this shape, false otherwise.
      */
-    virtual bool voxelInside(RSABoundaryConditions *bc, const RSAVector &voxelPosition,
+    virtual bool voxelInside(BoundaryConditions *bc, const RSAVector &voxelPosition,
                              const RSAOrientation &orientation, double spatialSize,
                              double angularSize) const = 0;
 
@@ -318,7 +318,7 @@ public:
      * @param angularSize angular size of the voxel
      * @return true if the voxel is fully covered by the exclusion zone of @a this shape, false otherwise.
      */
-    EarlyRejectionResult voxelInsideEarlyRejection(RSABoundaryConditions *bc, const RSAVector &voxelPosition,
+    EarlyRejectionResult voxelInsideEarlyRejection(BoundaryConditions *bc, const RSAVector &voxelPosition,
                                                    const RSAOrientation &orientation, double spatialSize,
                                                    double angularSize) const;
 
@@ -327,7 +327,7 @@ public:
      * @param s ??
      * @return ??
      */
-    virtual double minDistance(const RSAShape *s) const;
+    virtual double minDistance(const Shape *s) const;
 
     /**
      * @brief Returns string representation of the shape.
@@ -396,7 +396,7 @@ public:
      * @brief Returns dynamically allocated exact copy of a shape.
      * @return dynamically allocated exact copy of a shape
      */
-    virtual RSAShape *clone() const = 0;
+    virtual Shape *clone() const = 0;
 };
 
 
@@ -423,7 +423,7 @@ public:
  */
 class ShapeStaticInfo {
 private:
-    using create_shape_fun_ptr = typename RSAShape::create_shape_fun_ptr;
+    using create_shape_fun_ptr = typename Shape::create_shape_fun_ptr;
     static constexpr double NOT_SPECIFIED = std::numeric_limits<double>::infinity();
 
     double circumsphereRadius = NOT_SPECIFIED;
@@ -632,7 +632,7 @@ public:
     template<typename ConcreteShape>
     void setDefaultCreateShapeImpl() {
         this->createShapeImpl = []([[maybe_unused]] RND *rnd) {
-            return static_cast<RSAShape *>(new ConcreteShape());
+            return static_cast<Shape *>(new ConcreteShape());
         };
     }
 

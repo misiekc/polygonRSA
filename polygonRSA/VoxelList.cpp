@@ -262,7 +262,7 @@ bool VoxelList::isVoxelInsidePacking(Voxel *v){
  */
 
 bool VoxelList::isVoxelInsideExclusionZone(Voxel *v, double spatialSize, double angularSize,
-										   std::vector<const RSAShape *> *shapes, RSABoundaryConditions *bc,
+                                           std::vector<const Shape *> *shapes, BoundaryConditions *bc,
                                            unsigned short depth){
 	// if voxel is outside the packing it is inside exclusion zone
 //	if (!this->isVoxelInsidePacking(v))
@@ -270,7 +270,7 @@ bool VoxelList::isVoxelInsideExclusionZone(Voxel *v, double spatialSize, double 
 	// otherwise checking
 
 	bool isInside = false;
-	for(const RSAShape *s : *shapes){
+	for(const Shape *s : *shapes){
 		isInside = s->voxelInside(bc, v->getPosition(), v->getOrientation(), spatialSize, angularSize);
 		if (isInside)
 			break;
@@ -314,17 +314,17 @@ bool VoxelList::isTopLevelVoxelActive(Voxel *v){
 	return this->activeTopLevelVoxels[index];
 }
 
-bool VoxelList::analyzeVoxel(Voxel *v, NeighbourGrid<const RSAShape> *nl, RSABoundaryConditions *bc, double spatialSize, double angularSize, unsigned short depth){
+bool VoxelList::analyzeVoxel(Voxel *v, NeighbourGrid<const Shape> *nl, BoundaryConditions *bc, double spatialSize, double angularSize, unsigned short depth){
 	if (!this->disabled){ // && (depth > v->depth || depth==0) ){
 
 	    if (!isTopLevelVoxelActive(v) || !this->isVoxelInsidePacking(v) )
 			return true;
 
-	    std::vector<const RSAShape*> tmpShapes, shapes;
+	    std::vector<const Shape*> tmpShapes, shapes;
 		    nl->getNeighbours(&tmpShapes, v->getPosition());
 
 		int maxNo = v->lastAnalyzed;
-		for(const RSAShape *s: tmpShapes){
+		for(const Shape *s: tmpShapes){
 			if (v->lastAnalyzed < s->no || depth > v->depth){
 				shapes.push_back(s);
 				if(maxNo < s->no)
@@ -342,7 +342,7 @@ bool VoxelList::analyzeVoxel(Voxel *v, NeighbourGrid<const RSAShape> *nl, RSABou
 }
 
 
-size_t VoxelList::analyzeVoxels(RSABoundaryConditions *bc, NeighbourGrid<const RSAShape> *nl, unsigned short depth) {
+size_t VoxelList::analyzeVoxels(BoundaryConditions *bc, NeighbourGrid<const Shape> *nl, unsigned short depth) {
 
 	size_t begin = this->length;
 
@@ -368,7 +368,7 @@ size_t VoxelList::analyzeVoxels(RSABoundaryConditions *bc, NeighbourGrid<const R
 }
 
 
-bool VoxelList::splitVoxels(size_t maxVoxels, NeighbourGrid<const RSAShape> *nl, RSABoundaryConditions *bc){
+bool VoxelList::splitVoxels(size_t maxVoxels, NeighbourGrid<const Shape> *nl, BoundaryConditions *bc){
 	if (this->disabled)
 		return false;
 	size_t voxelsFactor = 8;

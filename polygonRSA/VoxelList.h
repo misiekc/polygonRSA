@@ -85,12 +85,12 @@ protected:
 
 	bool isVoxelInsidePacking(Voxel *v);
 	bool isVoxelInsideExclusionZone(Voxel *v, double spatialSize, double angularSize,
-                                    std::vector<const RSAShape*> *shapes, RSABoundaryConditions *bc,
+                                    std::vector<const Shape*> *shapes, BoundaryConditions *bc,
                                     unsigned short depth = 0);
 
 	void splitVoxel(Voxel *v, double spatialSize, double angularSize, Voxel **vRes);
 
-	bool analyzeVoxel(Voxel *v, NeighbourGrid<const RSAShape> *nl, RSABoundaryConditions *bc, double spatialSize, double angularSize, unsigned short depth = 0);
+	bool analyzeVoxel(Voxel *v, NeighbourGrid<const Shape> *nl, BoundaryConditions *bc, double spatialSize, double angularSize, unsigned short depth = 0);
 
 public:
 
@@ -110,10 +110,10 @@ public:
 	void getNeighbours(std::vector<Voxel *> *result, const RSAVector &da);
 	void removeTopLevelVoxel(Voxel *v);
 
-	size_t analyzeVoxels(RSABoundaryConditions *bc, NeighbourGrid<const RSAShape> *nl, unsigned short depth);
+	size_t analyzeVoxels(BoundaryConditions *bc, NeighbourGrid<const Shape> *nl, unsigned short depth);
 
 
-	bool splitVoxels(size_t maxVoxels, NeighbourGrid<const RSAShape> *nl, RSABoundaryConditions *bc);
+	bool splitVoxels(size_t maxVoxels, NeighbourGrid<const Shape> *nl, BoundaryConditions *bc);
 
 	Voxel *getRandomVoxel(RND *rnd);
 	Voxel *getVoxel(int i);

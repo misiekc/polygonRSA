@@ -10,63 +10,63 @@
 #include "Shape.h"
 
 
-ShapeStaticInfo RSAShape::shapeStaticInfo;
+ShapeStaticInfo Shape::shapeStaticInfo;
 
-bool RSAShape::earlyRejectionEnabled = true;
+bool Shape::earlyRejectionEnabled = true;
 
 
-RSAShape::RSAShape() : RSAPositioned() {
+Shape::Shape() : RSAPositioned() {
     this->orientation.fill(0);
     this->no = 0;
     this->time = 0.0;
 }
 
-const RSAShape *
-RSAShape::overlap(RSABoundaryConditions *bc, std::vector<const RSAShape *> *shapes) const {
+const Shape *
+Shape::overlap(BoundaryConditions *bc, std::vector<const Shape *> *shapes) const {
 
-    for(const RSAShape *s: *shapes)
+    for(const Shape *s: *shapes)
         if (this->overlap(bc, s))
             return s;
 
     return nullptr;
 }
 
-double RSAShape::getVolume() const {
+double Shape::getVolume() const {
     return 1.;
 }
 
-RSAOrientation RSAShape::getOrientation() const{
+RSAOrientation Shape::getOrientation() const{
     return this->orientation;
 }
 
-void RSAShape::setOrientation(const RSAOrientation &orientation) {
+void Shape::setOrientation(const RSAOrientation &orientation) {
     this->orientation = orientation;
 }
 
-void RSAShape::rotate(const RSAOrientation &v){
+void Shape::rotate(const RSAOrientation &v){
     RSAOrientation orientation;
     for(unsigned short i=0; i<1; i++)
         orientation[i] = this->getOrientation()[i] + v[i];
     this->setOrientation(orientation);
 }
 
-double RSAShape::minDistance([[maybe_unused]] const RSAShape *s) const{
+double Shape::minDistance([[maybe_unused]] const Shape *s) const{
     return 0.0;
 }
 
-std::string RSAShape::toString() const{
+std::string Shape::toString() const{
     return std::to_string(this->no);
 }
 
-std::string RSAShape::toPovray() const{
+std::string Shape::toPovray() const{
     return "";
 }
 
-std::string RSAShape::toWolfram() const{
+std::string Shape::toWolfram() const{
     return "";
 }
 
-void RSAShape::store(std::ostream &f) const{
+void Shape::store(std::ostream &f) const{
     unsigned short sd = 2;
     unsigned short ad = 1;
     f.write((char *)(&sd), sizeof(unsigned char));
@@ -82,7 +82,7 @@ void RSAShape::store(std::ostream &f) const{
         f.write((char *)(this->orientation.data()), 1*sizeof(double));
 }
 
-void RSAShape::restore(std::istream &f){
+void Shape::restore(std::istream &f){
     unsigned char sd = 2;
     unsigned char ad = 1;
 
@@ -111,17 +111,17 @@ void RSAShape::restore(std::istream &f){
         f.read((char *)(this->orientation.data()), ad*sizeof(double));
 }
 
-void RSAShape::applyBC(RSABoundaryConditions *bc, RSAShape *second) const {
+void Shape::applyBC(BoundaryConditions *bc, Shape *second) const {
     second->translate(bc->getTranslation(this->getPosition(), second->getPosition()));
 }
 
-void RSAShape::setShapeStaticInfo(ShapeStaticInfo shapeStaticInfo) {
+void Shape::setShapeStaticInfo(ShapeStaticInfo shapeStaticInfo) {
     shapeStaticInfo.throwIfIncomplete();
-    RSAShape::shapeStaticInfo = std::move(shapeStaticInfo);
+    Shape::shapeStaticInfo = std::move(shapeStaticInfo);
 }
 
-RSAShape::EarlyRejectionResult
-RSAShape::overlapEarlyRejection(RSABoundaryConditions *bc, const RSAShape *s, ShapeStaticInfo shapeStaticInfo_) const
+Shape::EarlyRejectionResult
+Shape::overlapEarlyRejection(BoundaryConditions *bc, const Shape *s, ShapeStaticInfo shapeStaticInfo_) const
 {
     if (!earlyRejectionEnabled)
         return UNKNOWN;
@@ -136,18 +136,18 @@ RSAShape::overlapEarlyRejection(RSABoundaryConditions *bc, const RSAShape *s, Sh
         return UNKNOWN;
 }
 
-RSAShape::EarlyRejectionResult RSAShape::overlapEarlyRejection(RSABoundaryConditions *bc, const RSAShape *s) const {
+Shape::EarlyRejectionResult Shape::overlapEarlyRejection(BoundaryConditions *bc, const Shape *s) const {
     return this->overlapEarlyRejection(bc, s, shapeStaticInfo);
 }
 
-void RSAShape::setEarlyRejectionEnabled(bool earlyRejectionEnabled) {
-    RSAShape::earlyRejectionEnabled = earlyRejectionEnabled;
+void Shape::setEarlyRejectionEnabled(bool earlyRejectionEnabled) {
+    Shape::earlyRejectionEnabled = earlyRejectionEnabled;
 }
 
-RSAShape::EarlyRejectionResult
-RSAShape::voxelInsideEarlyRejection(RSABoundaryConditions *bc, const Vector<2> &voxelPosition,
-                                    [[maybe_unused]] const RSAOrientation &orientation, double spatialSize,
-                                    [[maybe_unused]] double angularSize) const
+Shape::EarlyRejectionResult
+Shape::voxelInsideEarlyRejection(BoundaryConditions *bc, const Vector<2> &voxelPosition,
+                                 [[maybe_unused]] const RSAOrientation &orientation, double spatialSize,
+                                 [[maybe_unused]] double angularSize) const
 {
     if (!earlyRejectionEnabled)
         return UNKNOWN;
@@ -171,8 +171,8 @@ RSAShape::voxelInsideEarlyRejection(RSABoundaryConditions *bc, const Vector<2> &
     return furthestCornerEarlyRejection(relativeSpatialCenter, halfSpatialSize);
 }
 
-RSAShape::EarlyRejectionResult
-RSAShape::sphereOnVoxelEarlyRejection(const Vector<2> &relativeSpatialCenter, double halfSpatialSize) const {
+Shape::EarlyRejectionResult
+Shape::sphereOnVoxelEarlyRejection(const Vector<2> &relativeSpatialCenter, double halfSpatialSize) const {
     double spatialCenterDistance2 = relativeSpatialCenter.norm2();
     double voxelCircumsphereRadius = halfSpatialSize * std::sqrt(2);
     double voxelInsphereRadius = halfSpatialSize;
@@ -185,8 +185,8 @@ RSAShape::sphereOnVoxelEarlyRejection(const Vector<2> &relativeSpatialCenter, do
         return UNKNOWN;
 }
 
-RSAShape::EarlyRejectionResult
-RSAShape::furthestCornerEarlyRejection(const Vector<2> &relativeSpatialCenter, double halfSpatialSize) const {
+Shape::EarlyRejectionResult
+Shape::furthestCornerEarlyRejection(const Vector<2> &relativeSpatialCenter, double halfSpatialSize) const {
     auto furthestVoxelCorner = relativeSpatialCenter;
     for (std::size_t j = 0; j < 2; j++) {
         if (relativeSpatialCenter[j] > 0)
@@ -204,31 +204,31 @@ RSAShape::furthestCornerEarlyRejection(const Vector<2> &relativeSpatialCenter, d
         return UNKNOWN;
 }
 
-double RSAShape::getNeighbourListCellSize() {
+double Shape::getNeighbourListCellSize() {
     return shapeStaticInfo.getNeighbourListCellSize();
 }
 
-double RSAShape::getVoxelSpatialSize() {
+double Shape::getVoxelSpatialSize() {
     return shapeStaticInfo.getVoxelSpatialSize();
 }
 
-double RSAShape::getAngularVoxelSize() {
+double Shape::getAngularVoxelSize() {
     return shapeStaticInfo.getVoxelAngularSize();
 }
 
-double RSAShape::getCircumsphereRadius() {
+double Shape::getCircumsphereRadius() {
     return shapeStaticInfo.getCircumsphereRadius();
 }
 
-double RSAShape::getInsphereRadius() {
+double Shape::getInsphereRadius() {
     return shapeStaticInfo.getInsphereRadius();
 }
 
-bool RSAShape::getSupportsSaturation() {
+bool Shape::getSupportsSaturation() {
     return shapeStaticInfo.getSupportsSaturation();
 }
 
-RSAShape::create_shape_fun_ptr RSAShape::getCreateShapeImpl() {
+Shape::create_shape_fun_ptr Shape::getCreateShapeImpl() {
     return shapeStaticInfo.getCreateShapeImpl();
 }
 

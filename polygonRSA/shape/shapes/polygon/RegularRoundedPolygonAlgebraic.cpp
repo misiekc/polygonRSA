@@ -2,10 +2,10 @@
 // Created by pkua on 06.04.2020.
 //
 
-#include "RegularRoundedPolygon.h"
-#include "RegularDiskopolygon.h"
+#include "RegularRoundedPolygonAlgebraic.h"
+#include "RegularRoundedPolygonGeometric.h"
 
-void RegularRoundedPolygon::initClass(const std::string &attr) {
+void RegularRoundedPolygonAlgebraic::initClass(const std::string &attr) {
     RegularDiskopolygonAttributes attributes(attr);
 
     double nSides = attributes.getNSides();
@@ -24,10 +24,10 @@ void RegularRoundedPolygon::initClass(const std::string &attr) {
     for (std::size_t i{}; i < nSides; i++)
         roundedPolygonAttributes << " " << i;
 
-    RoundedPolygon::initClass(roundedPolygonAttributes.str());
+    RoundedPolygonAlgebraic::initClass(roundedPolygonAttributes.str());
 
     // Make angular voxel size smaller - regular polygon has an n-fold rotational symmetry
-    ShapeStaticInfo shapeInfo = RSAShape::getShapeStaticInfo();
+    ShapeStaticInfo shapeInfo = Shape::getShapeStaticInfo();
     shapeInfo.setAngularVoxelSize(2*M_PI/nSides);
-    RSAShape::setShapeStaticInfo(shapeInfo);
+    Shape::setShapeStaticInfo(shapeInfo);
 }

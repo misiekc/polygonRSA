@@ -4,13 +4,13 @@
 
 #include "ConvexShape.h"
 
-bool RSAConvexShape::pointInside(RSABoundaryConditions *bc, const RSAVector &position) const {
+bool RSAConvexShape::pointInside(BoundaryConditions *bc, const RSAVector &position) const {
     RSAOrientation zeroAngle;
     zeroAngle.fill(0);
     return this->pointInside(bc, position, zeroAngle, 2*M_PI);
 }
 
-bool RSAConvexShape::voxelInside(RSABoundaryConditions *bc, const RSAVector &voxelPosition,
+bool RSAConvexShape::voxelInside(BoundaryConditions *bc, const RSAVector &voxelPosition,
                                  const RSAOrientation &orientation, double spatialSize, double angularSize) const
 {
     switch(this->voxelInsideEarlyRejection(bc, voxelPosition, orientation, spatialSize, angularSize)) {

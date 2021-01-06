@@ -169,7 +169,7 @@ void Polygon::initClass(const std::string &args){
     shapeInfo.setSupportsSaturation(true);
     shapeInfo.setDefaultCreateShapeImpl<Polygon>();
 
-    RSAShape::setShapeStaticInfo(shapeInfo);
+    Shape::setShapeStaticInfo(shapeInfo);
 }
 
 void Polygon::normalizeVolume(std::istringstream &in) {
@@ -347,7 +347,7 @@ bool Polygon::overlapComplexCheck(RSAVector &position, double angle, RSAVector &
     std::pair<size_t, size_t> segment;
     std::pair<RSAVector, RSAVector> xySegment;
 
-    double circumsphereRadius2 = std::pow(RSAShape::getCircumsphereRadius(), 2);
+    double circumsphereRadius2 = std::pow(Shape::getCircumsphereRadius(), 2);
     for (size_t i = 0; i < Polygon::segments.size() + Polygon::helperSegments.size(); i++){
         if (i<Polygon::segments.size()){
             segment = Polygon::segments[i];
@@ -384,7 +384,7 @@ bool Polygon::overlapComplexCheck(RSAVector &position, double angle, RSAVector &
 }
 
 
-bool Polygon::overlap(RSABoundaryConditions *bc, const RSAShape *s) const{
+bool Polygon::overlap(BoundaryConditions *bc, const Shape *s) const{
     switch (this->overlapEarlyRejection(bc, s)) {
         case TRUE:      return true;
         case FALSE:     return false;
@@ -404,9 +404,9 @@ bool Polygon::overlap(RSABoundaryConditions *bc, const RSAShape *s) const{
     return this->overlapComplexCheck(position, angle, polposition, polangle);
 }
 
-bool Polygon::voxelInside(RSABoundaryConditions *bc, const RSAVector &voxelPosition,
+bool Polygon::voxelInside(BoundaryConditions *bc, const RSAVector &voxelPosition,
                           const RSAOrientation &voxelOrientation, double spatialSize, double angularSize) const {
-    if (voxelOrientation[0] > RSAShape::getAngularVoxelSize())
+    if (voxelOrientation[0] > Shape::getAngularVoxelSize())
         return true;
 
     switch(this->voxelInsideEarlyRejection(bc, voxelPosition, voxelOrientation, spatialSize, angularSize)) {
@@ -429,7 +429,7 @@ bool Polygon::voxelInside(RSABoundaryConditions *bc, const RSAVector &voxelPosit
 }
 
 bool Polygon::voxelInsideFullAngleCheck(const RSAVector &spatialCenter, double halfSpatialSize) const {
-    double pushDistance = RSAShape::getInsphereRadius() - halfSpatialSize * M_SQRT2;
+    double pushDistance = Shape::getInsphereRadius() - halfSpatialSize * M_SQRT2;
     Assert(pushDistance >= 0);
 
     // For small polygons full check yields faster generation, while for larger (like 20-gons) checking only vertices
@@ -529,7 +529,7 @@ bool Polygon::voxelInsideComplexCheck(const RSAVector &spatialCenter, double hal
     return false;
 }
 
-RSAShape *Polygon::clone() const {
+Shape *Polygon::clone() const {
     return new Polygon(*this);
 }
 

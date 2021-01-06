@@ -43,10 +43,10 @@ public:
 
     double getVolume() const override;
 
-    RSAShape *clone() const override;
+    Shape *clone() const override;
 
-    bool overlap(RSABoundaryConditions *bc, const RSAShape *s) const override;
-    bool pointInside(RSABoundaryConditions *bc, const RSAVector &da, double angleFrom, double angleTo) const override;
+    bool overlap(BoundaryConditions *bc, const Shape *s) const override;
+    bool pointInside(BoundaryConditions *bc, const RSAVector &da, double angleFrom, double angleTo) const override;
     void store(std::ostream &f) const override;
     void restore(std::istream &f) override;
     std::string toString() const override;

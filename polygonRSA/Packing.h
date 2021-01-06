@@ -16,12 +16,12 @@
  */
 class Packing {
 private:
-    using shape_ptr = const RSAShape *;
+    using shape_ptr = const Shape *;
     using const_iterator = std::vector<shape_ptr>::const_iterator;
 
     std::vector<shape_ptr> packing;
 
-    void expandShapeOnBC(const RSAShape *shape, double translation, size_t translateCoordIdx);
+    void expandShapeOnBC(const Shape *shape, double translation, size_t translateCoordIdx);
 
 public:
     Packing() = default;
@@ -35,7 +35,7 @@ public:
      * @breif Adds given dynamically allocated @a shape to a packing and takes care of deallocation later
      * @param shape a Shape to add to a packing
      */
-    void addShape(const RSAShape *shape) { this->packing.push_back(shape); }
+    void addShape(const Shape *shape) { this->packing.push_back(shape); }
 
     /**
      * @brief Access to a shape of given @a index.
@@ -44,7 +44,7 @@ public:
      * @param index index of a shape
      * @return a shape of given @a index
      */
-    const RSAShape *operator[](std::size_t index) const;
+    const Shape *operator[](std::size_t index) const;
 
     /**
      * @brief Removes a shape of given @a index from a packing.
@@ -76,13 +76,13 @@ public:
      * @brief Returns the last shape in a packing.
      * @return the last shape in a packing
      */
-    const RSAShape *back() const { return this->packing.back(); }
+    const Shape *back() const { return this->packing.back(); }
 
     /**
      * @brief Returns the first shape in a packing.
      * @return the first shape in a packing
      */
-    const RSAShape *front() const { return this->packing.front(); }
+    const Shape *front() const { return this->packing.front(); }
 
     /**
      * @brief Stores a packing in a binary form to a given std::ostream.

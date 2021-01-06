@@ -36,7 +36,7 @@ void Packing::restore(std::istream &in) {
     packing.clear();
 
     while (!in.eof()) {
-        RSAShape *shape = ShapeFactory::createShape(&rnd);
+        Shape *shape = ShapeFactory::createShape(&rnd);
         shape->restore(in);
         this->addShape(shape);
     }
@@ -77,8 +77,8 @@ void Packing::expandOnPBC(double linearSize, double expandMargin) {
 }
 
 /* Helper method. Clones a shape and translates one of its coordinates in a given direction. */
-void Packing::expandShapeOnBC(const RSAShape *shape, double translation, size_t translateCoordIdx) {
-    RSAShape *shapeClone = shape->clone();
+void Packing::expandShapeOnBC(const Shape *shape, double translation, size_t translateCoordIdx) {
+    Shape *shapeClone = shape->clone();
     RSAVector trans;
     trans[translateCoordIdx] = translation;
     shapeClone->translate(trans);
@@ -90,7 +90,7 @@ void Packing::removeShape(std::size_t index) {
     this->packing.erase(this->packing.begin() + index);
 }
 
-const RSAShape *Packing::operator[](std::size_t index) const {
+const Shape *Packing::operator[](std::size_t index) const {
     if (index >= this->size())
         throw std::runtime_error("index >= size");
     return this->packing[index];

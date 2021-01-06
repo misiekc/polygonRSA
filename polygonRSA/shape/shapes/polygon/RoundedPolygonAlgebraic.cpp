@@ -5,7 +5,7 @@
  *      Author: ciesla
  */
 
-#include "RoundedPolygon.h"
+#include "RoundedPolygonAlgebraic.h"
 #include "../../../Utils.h"
 #include <cmath>
 #include <sstream>
@@ -14,23 +14,23 @@
 #define VOXEL_INSIDE_FULL_ANGLE_ONLY_VERTICES
 
 
-double RoundedPolygon::radius;
+double RoundedPolygonAlgebraic::radius;
 
-double RoundedPolygon::calculateCircumscribedCircleRadius(){
-	return Polygon::calculateCircumscribedCircleRadius() + RoundedPolygon::radius;
+double RoundedPolygonAlgebraic::calculateCircumscribedCircleRadius(){
+	return Polygon::calculateCircumscribedCircleRadius() + RoundedPolygonAlgebraic::radius;
 }
 
-void RoundedPolygon::normalizeVolume(std::istringstream &in){
+void RoundedPolygonAlgebraic::normalizeVolume(std::istringstream &in){
 	double area;
 	in >> area;
 	if (in) {
         Validate(area > 0);
     } else {
-        area = RoundedPolygon::getArea();
+        area = RoundedPolygonAlgebraic::getArea();
     }
 
 	std::for_each(vertexR.begin(), vertexR.end(), [area](auto &vR) { vR /= sqrt(area); });
-    RoundedPolygon::radius /= sqrt(area);
+    RoundedPolygonAlgebraic::radius /= sqrt(area);
 }
 
 /**
@@ -51,35 +51,35 @@ void RoundedPolygon::normalizeVolume(std::istringstream &in){
  * or equivalently
  * 0.2 4 rt 1.4142 0.7854 1.4142 2.3562 1.4142 3.9270 1.4142 5.4978 4 0 1 2 3
  */
-void RoundedPolygon::initClass(const std::string &args){
+void RoundedPolygonAlgebraic::initClass(const std::string &args){
     clearOldData();
 	std::istringstream in(args);
 
-	in >> RoundedPolygon::radius;
+	in >> RoundedPolygonAlgebraic::radius;
 
     Polygon::parseVertices(in);
     Polygon::parseSegments(in);
     Polygon::centerPolygon();
 
-    RoundedPolygon::normalizeVolume(in);
+    RoundedPolygonAlgebraic::normalizeVolume(in);
 
     ShapeStaticInfo shapeInfo;
-    shapeInfo.setCircumsphereRadius(Polygon::calculateCircumscribedCircleRadius() + RoundedPolygon::radius);
-	shapeInfo.setInsphereRadius(Polygon::calculateInscribedCircleRadius() + RoundedPolygon::radius);
+    shapeInfo.setCircumsphereRadius(Polygon::calculateCircumscribedCircleRadius() + RoundedPolygonAlgebraic::radius);
+	shapeInfo.setInsphereRadius(Polygon::calculateInscribedCircleRadius() + RoundedPolygonAlgebraic::radius);
 	shapeInfo.setAngularVoxelSize(2*M_PI);
 	shapeInfo.setSupportsSaturation(true);
-	shapeInfo.setDefaultCreateShapeImpl <RoundedPolygon> ();
+	shapeInfo.setDefaultCreateShapeImpl <RoundedPolygonAlgebraic> ();
 
-	RSAShape::setShapeStaticInfo(shapeInfo);
+	Shape::setShapeStaticInfo(shapeInfo);
 }
 
-double RoundedPolygon::distance2pq(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, double p, double q){
+double RoundedPolygonAlgebraic::distance2pq(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, double p, double q){
     double dx = ((x1 + p*(x2 - x1)) - (x3 + q*(x4 - x3)));
     double dy = ((y1 + p*(y2 - y1)) - (y3 + q*(y4 - y3)));
     return dx*dx + dy*dy;
 }
 
-void RoundedPolygon::gradientDistance2pq(std::array<double, 2> &gradient, double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, double p, double q){
+void RoundedPolygonAlgebraic::gradientDistance2pq(std::array<double, 2> &gradient, double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, double p, double q){
     gradient[0] = 2*(x1 - x2)*((p-1)*x1 - p*x2 + x3*(1-q) + q*x4) + 2*(y1 - y2)*((p-1)*y1 - p*y2 + y3*(1-q) + q*y4);
     gradient[1] = 2*(x3 - x4)*((1-p)*x1 + p*x2 + x3*(q-1) - q*x4) + 2*(y3 - y4)*((1-p)*y1 + p*y2 + y3*(q-1) - q*y4);
 }
@@ -114,7 +114,7 @@ double RoundedPolygon::lineLineDistance2(double x1, double y1, double x2, double
 */
 
 //returns distance between line segment from point 1 to 2 and line segment from point 3 to 4 for segments that do not intersect
-double RoundedPolygon::lineLineDistance2(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4){
+double RoundedPolygonAlgebraic::lineLineDistance2(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4){
 
 	RSAVector p1 = {{x1, y1}};
 	RSAVector p2 = {{x2, y2}};
@@ -130,7 +130,7 @@ double RoundedPolygon::lineLineDistance2(double x1, double y1, double x2, double
 }
 
 	//test if line segment from point 1 to 2 intersects with line segment from point 3 to 4, but endpoints 3 and 4 comes from a line in a voxel, and thus carry an uncertainty
-bool RoundedPolygon::lineVoxelIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, double dx, double dtheta, double l3, double l4){
+bool RoundedPolygonAlgebraic::lineVoxelIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, double dx, double dtheta, double l3, double l4){
 
 	if (Polygon::lineVoxelIntersect(x1, y1, x2, y2, x3, y3, x4, y4, dx, dtheta, l3, l4))
 		return true;
@@ -138,19 +138,19 @@ bool RoundedPolygon::lineVoxelIntersect(double x1, double y1, double x2, double 
 	double d = std::sqrt(lineLineDistance2(x1, y1, x2, y2, x3, y3, x4, y4));
 	double delta = 2*std::max(l3,l4)*std::sin(dtheta/2) + dx*M_SQRT2;
 
-	if (d+delta < 2*RoundedPolygon::radius)
+	if (d+delta < 2 * RoundedPolygonAlgebraic::radius)
 		return true;
 	else
 		return false;
 }
 
-bool RoundedPolygon::overlapComplexCheck(RSAVector &position, double angle, RSAVector &polposition, double polangle) const{
+bool RoundedPolygonAlgebraic::overlapComplexCheck(RSAVector &position, double angle, RSAVector &polposition, double polangle) const{
 	// prepare segments set to check for overlapping. Only include segments that are not outside the circumsphere of the other shape.
 	std::vector<std::pair<RSAVector, RSAVector>> set, polset;
 	std::pair<size_t, size_t> segment;
 	std::pair<RSAVector, RSAVector> xySegment;
 
-	double circumsphereRadius2 = std::pow(RSAShape::getCircumsphereRadius() + RoundedPolygon::radius, 2);
+	double circumsphereRadius2 = std::pow(Shape::getCircumsphereRadius() + RoundedPolygonAlgebraic::radius, 2);
 	for (size_t i = 0; i < Polygon::segments.size() + Polygon::helperSegments.size(); i++){
 		if (i<Polygon::segments.size()){
 			segment = Polygon::segments[i];
@@ -181,15 +181,15 @@ bool RoundedPolygon::overlapComplexCheck(RSAVector &position, double angle, RSAV
 			if (Polygon::lineLineIntersect(polsegment.first[0], polsegment.first[1], polsegment.second[0], polsegment.second[1],
 					segment.first[0], segment.first[1], segment.second[0], segment.second[1]))
 				return true;
-			else if(RoundedPolygon::lineLineDistance2(polsegment.first[0], polsegment.first[1], polsegment.second[0], polsegment.second[1],
-					segment.first[0], segment.first[1], segment.second[0], segment.second[1]) < 4*RoundedPolygon::radius*RoundedPolygon::radius)
+			else if(RoundedPolygonAlgebraic::lineLineDistance2(polsegment.first[0], polsegment.first[1], polsegment.second[0], polsegment.second[1],
+                                                               segment.first[0], segment.first[1], segment.second[0], segment.second[1]) < 4 * RoundedPolygonAlgebraic::radius * RoundedPolygonAlgebraic::radius)
 				return true;
 		}
 	}
 	return false;
 }
 
-bool RoundedPolygon::voxelInsideComplexCheck(const RSAVector &spatialCenter, double halfSpatialSize, double angularCenter, double halfAngularSize) const {
+bool RoundedPolygonAlgebraic::voxelInsideComplexCheck(const RSAVector &spatialCenter, double halfSpatialSize, double angularCenter, double halfAngularSize) const {
 /*
 	if (
 			(std::fabs(spatialCenter[0] - 0.007926502214) < halfSpatialSize) &&
@@ -233,7 +233,7 @@ bool RoundedPolygon::voxelInsideComplexCheck(const RSAVector &spatialCenter, dou
     return false;
 }
 
-double RoundedPolygon::getArea() {
+double RoundedPolygonAlgebraic::getArea() {
     ValidateMsg(Polygon::isPolygonConvex(), "Automatic volume normalization for concave polygons is unsupported");
 
     double area = std::accumulate(segments.begin(), segments.end(), 0.0, [](auto a, auto seg) {
@@ -254,21 +254,21 @@ double RoundedPolygon::getArea() {
         double h = 2*areaTmp / v12.norm();
         double angle = std::acos(h/v10.norm()) + std::acos(h/v20.norm());
 
-        area += RoundedPolygon::radius*RoundedPolygon::radius*(M_PI - angle)/2.0;
-        area += v10.norm()*RoundedPolygon::radius;
+        area += RoundedPolygonAlgebraic::radius * RoundedPolygonAlgebraic::radius * (M_PI - angle) / 2.0;
+        area += v10.norm() * RoundedPolygonAlgebraic::radius;
     }
     return area;
 }
 
-double RoundedPolygon::getVolume() const {
+double RoundedPolygonAlgebraic::getVolume() const {
     return 1;
 }
 
-RSAShape *RoundedPolygon::clone() const {
-    return new RoundedPolygon(*this);
+Shape *RoundedPolygonAlgebraic::clone() const {
+    return new RoundedPolygonAlgebraic(*this);
 }
 
-std::string RoundedPolygon::toPovray() const{
+std::string RoundedPolygonAlgebraic::toPovray() const{
 	std::stringstream out;
 	out.precision(std::numeric_limits< double >::max_digits10);
 
@@ -287,23 +287,23 @@ std::string RoundedPolygon::toPovray() const{
 		RSAVector vSegment, vNormal, vBegin, vEnd;
 		vBegin = this->getVertexPosition(Polygon::segments[i].first);
 		vEnd = this->getVertexPosition(Polygon::segments[i].second);
-		out << "  disc { <" << vBegin[0] << ", " << vBegin[1] << ", 0.0002 >,  <0.0, 0.0, 1.0>, " << RoundedPolygon::radius << " texture { finish { ambient 1 diffuse 0 } pigment { color Red } } }" << std::endl;
+		out << "  disc { <" << vBegin[0] << ", " << vBegin[1] << ", 0.0002 >,  <0.0, 0.0, 1.0>, " << RoundedPolygonAlgebraic::radius << " texture { finish { ambient 1 diffuse 0 } pigment { color Red } } }" << std::endl;
 		vSegment = vEnd - vBegin;
 		vNormal[0] = vSegment[1]; vNormal[1] = -vSegment[0];
 		vNormal = vNormal.normalized();
 		out << "  polygon { 5, "
-				<< "<" << (vBegin[0] + vNormal[0]*RoundedPolygon::radius) << ", " << (vBegin[1] + vNormal[1]*RoundedPolygon::radius) << ", 0.0002 >, "
-				<< "<" << (vEnd[0] + vNormal[0]*RoundedPolygon::radius) << ", " << (vEnd[1] + vNormal[1]*RoundedPolygon::radius) << ", 0.0002 >, "
-				<< "<" << (vEnd[0] - vNormal[0]*RoundedPolygon::radius) << ", " << (vEnd[1] - vNormal[1]*RoundedPolygon::radius) << ", 0.0002 >, "
-				<< "<" << (vBegin[0] - vNormal[0]*RoundedPolygon::radius) << ", " << (vBegin[1] - vNormal[1]*RoundedPolygon::radius) << ", 0.0002 >, "
-				<< "<" << (vBegin[0] + vNormal[0]*RoundedPolygon::radius) << ", " << (vBegin[1] + vNormal[1]*RoundedPolygon::radius) << ", 0.0002 > "
-				<< " texture { finish { ambient 1 diffuse 0 } pigment { color Red} } }" << std::endl;
+            << "<" << (vBegin[0] + vNormal[0] * RoundedPolygonAlgebraic::radius) << ", " << (vBegin[1] + vNormal[1] * RoundedPolygonAlgebraic::radius) << ", 0.0002 >, "
+            << "<" << (vEnd[0] + vNormal[0] * RoundedPolygonAlgebraic::radius) << ", " << (vEnd[1] + vNormal[1] * RoundedPolygonAlgebraic::radius) << ", 0.0002 >, "
+            << "<" << (vEnd[0] - vNormal[0] * RoundedPolygonAlgebraic::radius) << ", " << (vEnd[1] - vNormal[1] * RoundedPolygonAlgebraic::radius) << ", 0.0002 >, "
+            << "<" << (vBegin[0] - vNormal[0] * RoundedPolygonAlgebraic::radius) << ", " << (vBegin[1] - vNormal[1] * RoundedPolygonAlgebraic::radius) << ", 0.0002 >, "
+            << "<" << (vBegin[0] + vNormal[0] * RoundedPolygonAlgebraic::radius) << ", " << (vBegin[1] + vNormal[1] * RoundedPolygonAlgebraic::radius) << ", 0.0002 > "
+            << " texture { finish { ambient 1 diffuse 0 } pigment { color Red} } }" << std::endl;
     }
 
 	return out.str();
 }
 
-std::string RoundedPolygon::toWolfram() const {
+std::string RoundedPolygonAlgebraic::toWolfram() const {
     std::ostringstream out;
     out << "{" << Polygon::toWolfram() << "";
 

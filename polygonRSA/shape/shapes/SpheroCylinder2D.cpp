@@ -58,7 +58,7 @@ void SpheroCylinder2D::initClass(const std::string &attr) {
     // This one will be overwritten in case of diskopolygon simulation, but in that case only
     // SpheroCylinder2D::overlap and SpheroCylinder2D::pointInside methods matter, and they are not affected by the
     // global Shape's static info
-    RSAShape::setShapeStaticInfo(SpheroCylinder2D::spherocylinderShapeInfo);
+    Shape::setShapeStaticInfo(SpheroCylinder2D::spherocylinderShapeInfo);
 }
 
 double SpheroCylinder2D::getVolume() const {
@@ -66,7 +66,7 @@ double SpheroCylinder2D::getVolume() const {
            + M_PI*SpheroCylinder2D::radius * SpheroCylinder2D::radius;
 }
 
-bool SpheroCylinder2D::overlap(RSABoundaryConditions *bc, const RSAShape *s) const {
+bool SpheroCylinder2D::overlap(BoundaryConditions *bc, const Shape *s) const {
     // Use "local", SpheroCylinder2D ShapeStaticInfo, because for diskopolygon classes, the global one is overriden
     switch (this->overlapEarlyRejection(bc, s, SpheroCylinder2D::spherocylinderShapeInfo)) {
         case TRUE:      return true;
@@ -95,7 +95,7 @@ double SpheroCylinder2D::pointDistance2(const RSAVector &pos, double angle, cons
         return (diff - centerVector).norm2();
 }
 
-bool SpheroCylinder2D::pointInside(RSABoundaryConditions *bc, const RSAVector &da, double angleFrom,
+bool SpheroCylinder2D::pointInside(BoundaryConditions *bc, const RSAVector &da, double angleFrom,
                                    double angleTo) const {
     AnisotropicShape2D::normalizeAngleRange(this->getAngle(), &angleFrom, &angleTo, M_PI);
 
@@ -173,11 +173,11 @@ std::string SpheroCylinder2D::toPovray() const {
 }
 
 void SpheroCylinder2D::store(std::ostream &f) const {
-    RSAShape::store(f);
+    Shape::store(f);
 }
 
 void SpheroCylinder2D::restore(std::istream &f) {
-    RSAShape::restore(f);
+    Shape::restore(f);
 }
 
 std::string SpheroCylinder2D::toWolfram() const {
@@ -216,7 +216,7 @@ bool SpheroCylinder2D::withinExclusionZone(const RSAVector &pointPos, double ang
            this->pointDistance2(thisPos - thisRot * centerVector, angle, pointPos) < 4 * radius * radius;
 }
 
-RSAShape *SpheroCylinder2D::clone() const {
+Shape *SpheroCylinder2D::clone() const {
     return new SpheroCylinder2D(*this);
 }
 

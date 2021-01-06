@@ -18,12 +18,12 @@
  * non-zero only if ConvexShape::pointInside is capable of dealing with angle-dependent exclusion zones, ie. when
  * generating saturated RSA packings is supported
  */
-class RSAConvexShape : public RSAShape {
+class RSAConvexShape : public Shape {
 protected:
-    using EarlyRejectionResult = RSAShape::EarlyRejectionResult;
+    using EarlyRejectionResult = Shape::EarlyRejectionResult;
 
 public:
-    virtual bool voxelInside(RSABoundaryConditions *bc, const RSAVector &voxelPosition,
+    virtual bool voxelInside(BoundaryConditions *bc, const RSAVector &voxelPosition,
                              const RSAOrientation &orientation, double spatialSize, double angularSize) const;
 
     /**
@@ -36,7 +36,7 @@ public:
      * @param orientationRange array of lengths of angle intervals
      * @return false if point is outside, true otherwise
      */
-    virtual bool pointInside(RSABoundaryConditions *bc, const RSAVector &position, const RSAOrientation &orientation,
+    virtual bool pointInside(BoundaryConditions *bc, const RSAVector &position, const RSAOrientation &orientation,
                              double orientationRange) const = 0;
 
     /**
@@ -46,7 +46,7 @@ public:
      * @param da position of a virtual particle of the same size to check
      * @return false if point is outside, true otherwise
      */
-    virtual bool pointInside(RSABoundaryConditions *bc, const RSAVector &position) const;
+    virtual bool pointInside(BoundaryConditions *bc, const RSAVector &position) const;
 };
 
 

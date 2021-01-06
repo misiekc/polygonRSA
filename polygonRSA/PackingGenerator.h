@@ -32,7 +32,7 @@ private:
 	double spatialSize;
 	double angularSize;
 
-    void modifiedRSA(RSAShape *s, Voxel *v);
+    void modifiedRSA(Shape *s, Voxel *v);
 	bool isSaturated();
 	double getFactor();
 	bool isInside(const RSAVector &position, RSAOrientation &orientation);

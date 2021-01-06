@@ -4,7 +4,7 @@
 
 #include "AnisotropicShape2D.h"
 
-bool AnisotropicShape2D::pointInside(RSABoundaryConditions *bc, const RSAVector &position,
+bool AnisotropicShape2D::pointInside(BoundaryConditions *bc, const RSAVector &position,
                                      const RSAOrientation &orientation, double orientationRange) const {
 	return this->pointInside(bc, position, orientation[0], orientation[0]+orientationRange);
 }

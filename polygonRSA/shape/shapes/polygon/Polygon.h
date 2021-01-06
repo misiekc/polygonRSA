@@ -15,7 +15,7 @@
 #include "../../AnisotropicShape2D.h"
 #include "../../../Vector.h"
 
-class Polygon : public RSAShape {
+class Polygon : public Shape {
 private:
     static void normalizeVolume(std::istringstream &in);
     static bool pointInsidePolygon(const RSAVector &point, const std::vector<RSAVector> &vertiecs);
@@ -82,12 +82,12 @@ public:
     static const std::vector<std::pair<size_t, size_t>> &getSegments() { return segments; }
     static const std::vector<std::pair<size_t, size_t>> &getHelperSegments() { return helperSegments; }
 
-    RSAShape *clone() const override;
+    Shape *clone() const override;
     double getVolume() const override;
 
-    bool overlap(RSABoundaryConditions *bc, const RSAShape *s) const override;
+    bool overlap(BoundaryConditions *bc, const Shape *s) const override;
 
-    bool voxelInside(RSABoundaryConditions *bc, const RSAVector &voxelPosition, const RSAOrientation &voxelOrientation,
+    bool voxelInside(BoundaryConditions *bc, const RSAVector &voxelPosition, const RSAOrientation &voxelOrientation,
                      double spatialSize, double angularSize) const override;
     std::string toPovray() const override;
     std::string toString() const override;

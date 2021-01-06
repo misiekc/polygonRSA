@@ -15,11 +15,11 @@
 #include "shape/Shape.h"
 #include "NeighbourGrid.h"
 
-class Surface : public RSABoundaryConditions {
+class Surface : public BoundaryConditions {
 
 protected:
 
-	NeighbourGrid<const RSAShape> *list;
+	NeighbourGrid<const Shape> *list;
 
 	double size;
 
@@ -31,12 +31,12 @@ public:
 	virtual ~Surface();
 
 	void clear();
-	void add(const RSAShape *s);
-	const RSAShape *check(const RSAShape *s);
-	void getNeighbours(std::vector<const RSAShape*> *result, const RSAVector &da);
-	const RSAShape *getClosestNeighbour(const RSAVector &da);
-	const RSAShape *getClosestNeighbour(const RSAVector &da, const std::vector<const RSAShape*> &neighbours);
-	NeighbourGrid<const RSAShape> *getNeighbourGrid();
+	void add(const Shape *s);
+	const Shape *check(const Shape *s);
+	void getNeighbours(std::vector<const Shape*> *result, const RSAVector &da);
+	const Shape *getClosestNeighbour(const RSAVector &da);
+	const Shape *getClosestNeighbour(const RSAVector &da, const std::vector<const Shape*> &neighbours);
+	NeighbourGrid<const Shape> *getNeighbourGrid();
     double distance2(const RSAVector &a1, const RSAVector &a2) const override;
 
 	RSAVector getTranslation(const RSAVector &p1, const RSAVector &p2) const override = 0;

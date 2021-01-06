@@ -8,9 +8,9 @@
 #include "ShapeFactory.h"
 #include "shapes/polygon/Polygon.h"
 #include "shapes/polygon/Triangle.h"
-#include "shapes/polygon/RegularDiskopolygon.h"
-#include "shapes/polygon/RegularRoundedPolygon.h"
-#include "shapes/polygon/RoundedPolygon.h"
+#include "shapes/polygon/RegularRoundedPolygonGeometric.h"
+#include "shapes/polygon/RegularRoundedPolygonAlgebraic.h"
+#include "shapes/polygon/RoundedPolygonAlgebraic.h"
 
 struct UnknownShapeException: public std::domain_error {
 	UnknownShapeException() :
@@ -45,21 +45,21 @@ void ShapeFactory::initShapeClass0(const std::string &sClass,
 	} else if (sClass == "Polygon") {
         Polygon::initClass(attr);
         return;
-    } else if (sClass == "RegularDiskopolygon") {
-        RegularDiskopolygon::initClass(attr);
+    } else if (sClass == "RegularRoundedPolygonGeometric") {
+        RegularRoundedPolygonGeometric::initClass(attr);
         return;
-    } else if (sClass == "RegularRoundedPolygon") {
-        RegularRoundedPolygon::initClass(attr);
+    } else if (sClass == "RegularRoundedPolygonAlgebraic") {
+        RegularRoundedPolygonAlgebraic::initClass(attr);
         return;
-    } else if (sClass == "RoundedPolygon") {
-        RoundedPolygon::initClass(attr);
+    } else if (sClass == "RoundedPolygonAlgebraic") {
+        RoundedPolygonAlgebraic::initClass(attr);
         return;
     }
 	throw UnknownShapeException();
 }
 
-RSAShape *ShapeFactory::createShape(RND *rnd) {
+Shape *ShapeFactory::createShape(RND *rnd) {
 	// Fetch appropriate function from Shape
-	auto createShapeImpl = RSAShape::getCreateShapeImpl();
+	auto createShapeImpl = Shape::getCreateShapeImpl();
 	return createShapeImpl(rnd);
 }

@@ -5,11 +5,11 @@
 #include <sstream>
 #include <cmath>
 
-#include "RegularDiskopolygon.h"
-#include "..//SpheroCylinder2D.h"
+#include "RegularRoundedPolygonGeometric.h"
+#include "../SpheroCylinder2D.h"
 
 namespace {
-    class FreeBC : public RSABoundaryConditions {
+    class FreeBC : public BoundaryConditions {
     public:
         double distance2(const RSAVector &p1, const RSAVector &p2) const { return (p1 - p2).norm2(); }
         RSAVector getTranslation([[maybe_unused]]const RSAVector &p1, [[maybe_unused]] const RSAVector &p2) const {
@@ -18,9 +18,9 @@ namespace {
     };
 }
 
-RegularDiskopolygonAttributes RegularDiskopolygon::attributes;
+RegularDiskopolygonAttributes RegularRoundedPolygonGeometric::attributes;
 
-void RegularDiskopolygon::initClass(const std::string &attr) {
+void RegularRoundedPolygonGeometric::initClass(const std::string &attr) {
     attributes = RegularDiskopolygonAttributes(attr);
 
     std::ostringstream spherocylinderAttr;
@@ -32,8 +32,8 @@ void RegularDiskopolygon::initClass(const std::string &attr) {
     shapeInfo.setInsphereRadius(getHeight() + getRadius());
     shapeInfo.setAngularVoxelSize(2*M_PI / getNSides());
     shapeInfo.setSupportsSaturation(true);
-    shapeInfo.setDefaultCreateShapeImpl<RegularDiskopolygon>();
-    RSAShape::setShapeStaticInfo(shapeInfo);
+    shapeInfo.setDefaultCreateShapeImpl<RegularRoundedPolygonGeometric>();
+    Shape::setShapeStaticInfo(shapeInfo);
 }
 
 void RegularDiskopolygonAttributes::normalizeVolume() {
@@ -47,14 +47,14 @@ void RegularDiskopolygonAttributes::normalizeVolume() {
     this->halfDiagonal /= std::sqrt(volume);
 }
 
-bool RegularDiskopolygon::overlap(RSABoundaryConditions *bc, const RSAShape *s) const {
+bool RegularRoundedPolygonGeometric::overlap(BoundaryConditions *bc, const Shape *s) const {
     switch (this->overlapEarlyRejection(bc, s)) {
         case TRUE:      return true;
         case FALSE:     return false;
         case UNKNOWN:   break;
     }
 
-    RegularDiskopolygon other = dynamic_cast<const RegularDiskopolygon &>(*s);
+    RegularRoundedPolygonGeometric other = dynamic_cast<const RegularRoundedPolygonGeometric &>(*s);
     this->applyBC(bc, &other);
 
     FreeBC freeBC;
@@ -70,8 +70,8 @@ bool RegularDiskopolygon::overlap(RSABoundaryConditions *bc, const RSAShape *s) 
     return false;
 }
 
-bool RegularDiskopolygon::voxelInside(RSABoundaryConditions *bc, const RSAVector &voxelPosition,
-                                      const RSAOrientation &orientation, double spatialSize, double angularSize) const
+bool RegularRoundedPolygonGeometric::voxelInside(BoundaryConditions *bc, const RSAVector &voxelPosition,
+                                                 const RSAOrientation &orientation, double spatialSize, double angularSize) const
 {
     switch (this->voxelInsideEarlyRejection(bc, voxelPosition, orientation, spatialSize, angularSize)) {
         case EarlyRejectionResult::TRUE:      return true;
@@ -111,11 +111,11 @@ bool RegularDiskopolygon::voxelInside(RSABoundaryConditions *bc, const RSAVector
     return false;
 }
 
-RSAShape *RegularDiskopolygon::clone() const {
-    return new RegularDiskopolygon(*this);
+Shape *RegularRoundedPolygonGeometric::clone() const {
+    return new RegularRoundedPolygonGeometric(*this);
 }
 
-SpheroCylinder2D RegularDiskopolygon::getSpherocylinder(std::size_t index) const {
+SpheroCylinder2D RegularRoundedPolygonGeometric::getSpherocylinder(std::size_t index) const {
     SpheroCylinder2D sc;
 
     double scAngle = this->getAngle() + static_cast<double>(index) * 2 * M_PI / getNSides();
@@ -126,7 +126,7 @@ SpheroCylinder2D RegularDiskopolygon::getSpherocylinder(std::size_t index) const
     return sc;
 }
 
-std::string RegularDiskopolygon::toWolfram() const {
+std::string RegularRoundedPolygonGeometric::toWolfram() const {
     std::ostringstream out;
 
     out << "{";
@@ -140,9 +140,9 @@ std::string RegularDiskopolygon::toWolfram() const {
     return out.str();
 }
 
-void RegularDiskopolygon::setOrientation(const RSAOrientation &orientation) {
+void RegularRoundedPolygonGeometric::setOrientation(const RSAOrientation &orientation) {
     double angle = AnisotropicShape2D::normalizeAngle(orientation[0], 2*M_PI/getNSides());
-    RSAShape::setOrientation({{angle}});
+    Shape::setOrientation({{angle}});
 }
 
 void RectangularBoundingBuilder::recurseQuarters(RectangularBounding &bounding, const RSAVector &zeroAngleVector,

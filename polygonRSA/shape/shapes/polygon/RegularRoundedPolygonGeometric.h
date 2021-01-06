@@ -62,7 +62,7 @@ public:
     double getHalfDiagonal() const { return halfDiagonal; }
 };
 
-class RegularDiskopolygon : public RSAShape {
+class RegularRoundedPolygonGeometric : public Shape {
 private:
     static RegularDiskopolygonAttributes attributes;
 
@@ -80,10 +80,10 @@ public:
     static double getHeight() { return attributes.getHeight(); }
     static double getHalfDiagonal() { return attributes.getHalfDiagonal(); }
 
-    bool overlap(RSABoundaryConditions *bc, const RSAShape *s) const override;
-    bool voxelInside(RSABoundaryConditions *bc, const RSAVector &voxelPosition, const RSAOrientation &orientation,
+    bool overlap(BoundaryConditions *bc, const Shape *s) const override;
+    bool voxelInside(BoundaryConditions *bc, const RSAVector &voxelPosition, const RSAOrientation &orientation,
                      double spatialSize, double angularSize) const override;
-    RSAShape *clone() const override;
+    Shape *clone() const override;
     std::string toWolfram() const override;
     double getVolume() const override { return 1; }
 

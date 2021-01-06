@@ -8,9 +8,9 @@
 #include "Surface.h"
 #include <iostream>
 
-Surface::Surface(double s, double ndx) : RSABoundaryConditions() {
+Surface::Surface(double s, double ndx) : BoundaryConditions() {
 	this->size = s;
-	this->list = new NeighbourGrid<const RSAShape>(s, ndx);
+	this->list = new NeighbourGrid<const Shape>(s, ndx);
 }
 
 Surface::~Surface() {
@@ -22,12 +22,12 @@ void Surface::clear(){
 }
 
 
-void Surface::add(const RSAShape *s) {
+void Surface::add(const Shape *s) {
 	this->list->add(s, s->getPosition());
 }
 
-const RSAShape* Surface::check(const RSAShape *s){
-	std::vector<const RSAShape *> neighbours;
+const Shape* Surface::check(const Shape *s){
+	std::vector<const Shape *> neighbours;
 	this->list->getNeighbours(&neighbours, s->getPosition());
 
 	return s->overlap(this, &neighbours);
@@ -41,10 +41,10 @@ const RSAShape* Surface::check(const RSAShape *s){
 }
 
 
-const RSAShape *Surface::getClosestNeighbour(const RSAVector &da, const std::vector<const RSAShape*> &neighbours){
+const Shape *Surface::getClosestNeighbour(const RSAVector &da, const std::vector<const Shape*> &neighbours){
     double d, dmin = std::numeric_limits<double>::max();
-    const RSAShape *pmin = nullptr;
-    for(const RSAShape *p : neighbours){
+    const Shape *pmin = nullptr;
+    for(const Shape *p : neighbours){
         d = this->distance2(da, p->getPosition());
         if (d<dmin){
             pmin = p;
@@ -55,18 +55,18 @@ const RSAShape *Surface::getClosestNeighbour(const RSAVector &da, const std::vec
 }
 
 
-const RSAShape *Surface::getClosestNeighbour(const RSAVector &da) {
-    std::vector<const RSAShape*> result;
+const Shape *Surface::getClosestNeighbour(const RSAVector &da) {
+    std::vector<const Shape*> result;
     this->list->getNeighbours(&result, da);
     return getClosestNeighbour(da, result);
 }
 
 
-void Surface::getNeighbours(std::vector<const RSAShape*> *result, const RSAVector &da) {
+void Surface::getNeighbours(std::vector<const Shape*> *result, const RSAVector &da) {
 	this->list->getNeighbours(result, da);
 }
 
-NeighbourGrid<const RSAShape> *Surface::getNeighbourGrid(){
+NeighbourGrid<const Shape> *Surface::getNeighbourGrid(){
 	return this->list;
 }
 

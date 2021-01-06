@@ -10,11 +10,11 @@
 
 #include "Vector.h"
 
-class RSABoundaryConditions {
+class BoundaryConditions {
 public:
     using RSAVector = Vector<2>;
 
-	virtual ~RSABoundaryConditions() = default;
+	virtual ~BoundaryConditions() = default;
 
 	virtual double distance2(const RSAVector &p1, const RSAVector &p2) const = 0;
 

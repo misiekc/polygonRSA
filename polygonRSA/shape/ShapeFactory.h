@@ -28,7 +28,7 @@ public:
      * @param rnd random number generator to use
      * @return a pointer to a new, dynamically allocated Shape
      */
-	static RSAShape* createShape(RND *rnd);
+	static Shape* createShape(RND *rnd);
 
     /**
      * @brief Initializes a shape class based on passed name and attributes.

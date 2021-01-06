@@ -34,18 +34,18 @@ PackingGenerator::PackingGenerator(int seed, const Parameters *params) {
 	RND rnd(this->seed);
 
 	this->spatialSize = this->params.surfaceSize;
-	this->angularSize = RSAShape::getAngularVoxelSize();
+	this->angularSize = Shape::getAngularVoxelSize();
 	if (this->params.requestedAngularVoxelSize > this->angularSize)
 		this->params.requestedAngularVoxelSize = this->angularSize;
 
-	this->voxels = new VoxelList(this->spatialSize, RSAShape::getVoxelSpatialSize(), this->angularSize, this->params.requestedAngularVoxelSize);
+	this->voxels = new VoxelList(this->spatialSize, Shape::getVoxelSpatialSize(), this->angularSize, this->params.requestedAngularVoxelSize);
 
-	double gridSize = RSAShape::getNeighbourListCellSize();
+	double gridSize = Shape::getNeighbourListCellSize();
 
 	if (this->params.boundaryConditions == "free")
-		this->surface = new NBoxFBC(this->params.surfaceSize, gridSize, RSAShape::getVoxelSpatialSize());
+		this->surface = new NBoxFBC(this->params.surfaceSize, gridSize, Shape::getVoxelSpatialSize());
 	else
-		this->surface = new NBoxPBC(this->params.surfaceSize, gridSize, RSAShape::getVoxelSpatialSize());
+		this->surface = new NBoxPBC(this->params.surfaceSize, gridSize, Shape::getVoxelSpatialSize());
 }
 
 
@@ -86,12 +86,12 @@ void PackingGenerator::testPacking(const Packing &packing, double maxTime){
 	std::cout << " concurrent treads" << std::endl;
 
 	RND rnd(this->seed);
-	RSAShape *s = ShapeFactory::createShape(&rnd);
+	Shape *s = ShapeFactory::createShape(&rnd);
 	double dt = s->getVolume() / this->surface->getArea();
 	delete s;
 
 	this->packing = packing;
-	for(const RSAShape *s : packing)
+	for(const Shape *s : packing)
 		this->surface->add(s);
 	std::cout << "[" << this->seed << " PackingGenerator::testPacking] " << packing.size() << " shapes restored" << std::endl;
 
@@ -107,7 +107,7 @@ void PackingGenerator::testPacking(const Packing &packing, double maxTime){
 
 		_OMP_PARALLEL_FOR
 		for(int i = 0; i<loop; i++){
-			RSAShape *sVirtual = ShapeFactory::createShape(threadRND.get());
+			Shape *sVirtual = ShapeFactory::createShape(threadRND.get());
 			Voxel *v;
 			RSAVector pos;
 			RSAOrientation angle{};
@@ -130,10 +130,10 @@ void PackingGenerator::testPacking(const Packing &packing, double maxTime){
 				double delta = 0.0001;
 				orientation[0] -= 0.5*delta;
 
-				const RSAShape *sCovers = nullptr;
-				std::vector<const RSAShape*> vNeighbours;
+				const Shape *sCovers = nullptr;
+				std::vector<const Shape*> vNeighbours;
 				this->surface->getNeighbours(&vNeighbours, position);
-				for(const RSAShape *sTmp : vNeighbours){
+				for(const Shape *sTmp : vNeighbours){
 					if (sTmp->voxelInside(this->surface, position, orientation, 0.0001, delta)){
 						sCovers = sTmp;
 						break;
@@ -165,7 +165,7 @@ void PackingGenerator::createPacking() {
 	unsigned short depthAnalyze = 0;
 
 	RND rnd(this->seed);
-	RSAShape *s = ShapeFactory::createShape(&rnd);
+	Shape *s = ShapeFactory::createShape(&rnd);
 	double dt = s->getVolume() / this->surface->getArea();
 	delete s;
 
@@ -176,8 +176,8 @@ void PackingGenerator::createPacking() {
 
     ThreadLocalRND threadRND(rnd);
 
-	const RSAShape **sOverlapped = new const RSAShape*[tmpSplit];
-	RSAShape **sVirtual = new RSAShape*[tmpSplit];
+	const Shape **sOverlapped = new const Shape*[tmpSplit];
+	Shape **sVirtual = new Shape*[tmpSplit];
 	Voxel **aVoxels = new Voxel *[tmpSplit];
 
 	while (!this->isSaturated()) {
@@ -297,8 +297,8 @@ void PackingGenerator::createPacking() {
 				delete[] sVirtual;
 				delete[] aVoxels;
 
-				sOverlapped = new const RSAShape*[tmpSplit];
-				sVirtual = new RSAShape*[tmpSplit];
+				sOverlapped = new const Shape*[tmpSplit];
+				sVirtual = new Shape*[tmpSplit];
 				aVoxels = new Voxel *[tmpSplit];
 
 				oldTmpSplit = tmpSplit;
@@ -335,7 +335,7 @@ void PackingGenerator::toPovray(const Packing &packing, double size, VoxelList *
 	file << "#declare layer=union{" << std::endl;
 
 
-	for (const RSAShape *s : packing) {
+	for (const Shape *s : packing) {
 		file << s->toPovray();
 	}
 
@@ -366,7 +366,7 @@ void PackingGenerator::toPovray(const std::string &filename){
 
 void PackingGenerator::toWolfram(const RSAVector &da, const std::string &filename){
 
-	std::vector<const RSAShape*> vShapes;
+	std::vector<const Shape*> vShapes;
 	this->surface->getNeighbours(&vShapes, da);
 
 	std::vector<Voxel *> vVoxels;
@@ -375,7 +375,7 @@ void PackingGenerator::toWolfram(const RSAVector &da, const std::string &filenam
 	std::ofstream file(filename);
 	file << "Graphics[{Red";
 
-	for (const RSAShape *s : vShapes) {
+	for (const Shape *s : vShapes) {
 		file << ", " << std::endl << s->toWolfram();
 	}
 	if (!vVoxels.empty()){
@@ -404,7 +404,7 @@ void PackingGenerator::toWolfram(const Packing &packing, VoxelList *voxels, cons
 
     file << "Graphics[{Red";
 
-	for (const RSAShape *s : packing) {
+	for (const Shape *s : packing) {
 		file << ", " << std::endl << s->toWolfram();
 	}
 
@@ -427,7 +427,7 @@ void PackingGenerator::store(std::ostream &f) const{
 	std::size_t size = this->packing.size();
 	f.write((char *)(&size), sizeof(int));
 
-	for(const RSAShape *s: this->packing){
+	for(const Shape *s: this->packing){
 		s->store(f);
 	}
 	this->voxels->store(f);
@@ -441,7 +441,7 @@ void PackingGenerator::restore(std::istream &f){
 	this->packing.clear();
 	this->surface->clear();
 	for(int i=0; i<size; i++){
-		RSAShape *s = ShapeFactory::createShape(&rnd);
+		Shape *s = ShapeFactory::createShape(&rnd);
 		s->restore(f);
 		this->surface->add(s);
 		this->packing.addShape(s);

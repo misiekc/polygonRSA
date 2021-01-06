@@ -27,7 +27,7 @@ private:
     /* Delegated to AnisotropicShape2D::setAngle(double) */
     void setOrientation(const RSAOrientation &orientation) final;
     /* Delegated to AnisotropicShape2D::pointInside(BoundaryConditions*,double*,double,double). */
-    bool pointInside(RSABoundaryConditions *bc, const RSAVector &position, const RSAOrientation &orientation,
+    bool pointInside(BoundaryConditions *bc, const RSAVector &position, const RSAOrientation &orientation,
                      double orientationRange) const final;
 
 protected:
@@ -97,7 +97,7 @@ public:
      * @param angleTo array of lengths of angle intervals
      * @return 0 if point is outside, nonzero number otherwise
      */
-    virtual bool pointInside(RSABoundaryConditions *bc, const RSAVector &da, double angleFrom, double angleTo) const = 0;
+    virtual bool pointInside(BoundaryConditions *bc, const RSAVector &da, double angleFrom, double angleTo) const = 0;
 
 };
 

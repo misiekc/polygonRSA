@@ -13,6 +13,6 @@ from = 0                           # first packing number. Packing number is use
 collectors = 1                   # number of packings to generate
 
 # packed particle description
-particleType = RegularRoundedPolygon            # shape to pack
+particleType = RegularRoundedPolygonAlgebraic            # shape to pack
 particleAttributes = standard 3 1 0.5   # particle dependent attributes - here lengths of triangle sides
 #ompThreads = 1                    # upper bound on number of OpenMP threads to spawn, by default all available cores are used 
