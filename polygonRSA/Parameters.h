@@ -29,7 +29,7 @@ public:
 
 	std::string boundaryConditions = "periodic";
 	std::string particleType = "Triangle";
-	std::string particleAttributes = "1.0 1.0";
+	std::string particleAttributes = "1.0 1.0 1.0";
 
 	int ompThreads = _OMP_MAXTHREADS;
 
