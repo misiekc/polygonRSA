@@ -129,27 +129,6 @@ void test(const ProgramArguments &arguments) {
     pg.testPacking(packing, std::stod(positionalArguments[1]));
 }
 
-void debug(const ProgramArguments &arguments) {
-    std::vector<std::string> positionalArguments = arguments.getPositionalArguments();
-    if (positionalArguments.empty())
-        die(arguments.formatUsage("<packing generator file>"));
-
-    Parameters params = arguments.getParameters();
-    const char *cfile = positionalArguments[0].c_str();
-    std::string filename(cfile);
-    char buf[20];
-    sprintf(buf, "%.0f", pow(params.surfaceSize, 2));
-    std::string size(buf);
-
-    std::ifstream file(filename, std::ios::binary);
-    if (!file)
-        die("Cannot open file " + filename + " to restore packing generator");
-
-    PackingGenerator pg(0, &params);
-    pg.restore(file);
-    pg.run();
-}
-
 void dat(const ProgramArguments &arguments) {
     std::vector<std::string> positionalArguments = arguments.getPositionalArguments();
     if (positionalArguments.empty())
@@ -210,8 +189,6 @@ int main(int argc, char **argv) {
         simulate(*arguments);
     else if (mode == "test")
         test(*arguments);
-    else if (mode == "debug")
-        debug(*arguments);
     else if (mode == "dat")
         dat(*arguments);
     else if (mode == "povray")
